@@ -51,7 +51,7 @@ public class Moped1tab extends Fragment {
         RealmResults<Item> items = setUpRealm();
 
 
-        mAdapter = new Moped1RecyclerAdapter(items);
+        mAdapter = new Moped1RecyclerAdapter(items,getContext());
         mRecyclerView.setAdapter(mAdapter);
     }
 

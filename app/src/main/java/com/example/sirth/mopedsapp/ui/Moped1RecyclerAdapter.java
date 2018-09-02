@@ -17,22 +17,30 @@
 
 package com.example.sirth.mopedsapp.ui;
 
+import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 import com.example.sirth.mopedsapp.R;
 import com.example.sirth.mopedsapp.model.Item;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 public class Moped1RecyclerAdapter extends RealmRecyclerViewAdapter<Item, Moped1RecyclerAdapter.MyViewHolder> {
 
-    public Moped1RecyclerAdapter(OrderedRealmCollection<Item> data) {
+    Context context;
+
+    public Moped1RecyclerAdapter(OrderedRealmCollection<Item> data, Context context) {
         super(data, true);
+        this.context=context;
     }
 
     @Override
@@ -46,20 +54,41 @@ public class Moped1RecyclerAdapter extends RealmRecyclerViewAdapter<Item, Moped1
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final Item item = getItem(position);
         holder.setItem(item);
+
+        Picasso.get()
+                .load(Uri.parse(getItem(position).getURL()))
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(holder.mopedView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Try again online if cache failed
+                        Picasso.get()
+                                .load(Uri.parse(getItem(position)
+                                        .getURL()))
+                                .placeholder(R.drawable.ic_launcher_background)
+                                .error(R.drawable.ic_launcher_background)
+                                .into(holder.mopedView);
+                    }
+                });
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder  {
-        TextView textView;
         Item mItem;
+        ImageView mopedView;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.section_label);
+            mopedView=itemView.findViewById(R.id.section_label);
+
         }
 
         void setItem(Item item){
             this.mItem = item;
-            this.textView.setText(item.getURL());
         }
 
     }
