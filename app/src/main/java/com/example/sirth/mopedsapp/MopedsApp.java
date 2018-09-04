@@ -19,6 +19,9 @@ package com.example.sirth.mopedsapp;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import io.realm.Realm;
 
 public class MopedsApp extends Application {
@@ -26,5 +29,7 @@ public class MopedsApp extends Application {
     public void onCreate() {
         super.onCreate();
         Realm.init(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
     }
 }

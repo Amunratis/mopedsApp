@@ -24,15 +24,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import io.realm.OrderedRealmCollection;
-import io.realm.RealmRecyclerViewAdapter;
 import com.example.sirth.mopedsapp.R;
 import com.example.sirth.mopedsapp.model.Item;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 public class Moped1RecyclerAdapter extends RealmRecyclerViewAdapter<Item, Moped1RecyclerAdapter.MyViewHolder> {
 
@@ -40,7 +40,7 @@ public class Moped1RecyclerAdapter extends RealmRecyclerViewAdapter<Item, Moped1
 
     public Moped1RecyclerAdapter(OrderedRealmCollection<Item> data, Context context) {
         super(data, true);
-        this.context=context;
+        this.context = context;
     }
 
     @Override
@@ -77,17 +77,17 @@ public class Moped1RecyclerAdapter extends RealmRecyclerViewAdapter<Item, Moped1
                 });
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder  {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         Item mItem;
         ImageView mopedView;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            mopedView=itemView.findViewById(R.id.section_label);
+            mopedView = itemView.findViewById(R.id.section_label);
 
         }
 
-        void setItem(Item item){
+        void setItem(Item item) {
             this.mItem = item;
         }
 

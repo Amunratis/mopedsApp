@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package com.example.sirth.mopedsapp;
 
 import android.animation.Animator;
@@ -27,6 +27,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import java.util.Arrays;
 
 import io.realm.ObjectServerError;
 import io.realm.SyncCredentials;
@@ -39,28 +48,65 @@ public class WelcomeActivity extends AppCompatActivity {
     private EditText mNicknameTextView;
     private View mProgressView;
     private View mLoginFormView;
-
+    private static final String EMAIL = "email";
+    public static CallbackManager callbackManager;
+    private LoginButton loginButton;
+    String nickname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        callbackManager = CallbackManager.Factory.create();
+
         if (SyncUser.current() != null) {
             this.goToItemsActivity();
         }
 
+
         // Set up the login form.
         mNicknameTextView = findViewById(R.id.nickname);
-        Button loginButton = findViewById(R.id.login_button);
-        loginButton.setOnClickListener(view -> attemptLogin());
+        Button MloginButton = findViewById(R.id.login_button);
+        MloginButton.setOnClickListener(view -> attemptLogin());
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+
+
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList(EMAIL));
+        // If you are using in a fragment, call loginButton.setFragment(this);
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                nickname=loginResult.getAccessToken().toString();
+                attemptLogin();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Toast.makeText(WelcomeActivity.this, exception.toString(), Toast.LENGTH_LONG).show();
+
+                nickname=exception.toString();
+                attemptLogin();
+            }
+        });
+
+
     }
 
     private void attemptLogin() {
         // Reset errors.
         mNicknameTextView.setError(null);
         // Store values at the time of the login attempt.
+
         String nickname = mNicknameTextView.getText().toString();
         showProgress(true);
 
@@ -80,6 +126,13 @@ public class WelcomeActivity extends AppCompatActivity {
                 Log.e("Login error", error.toString());
             }
         });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -106,7 +159,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
     }
 
-    private void goToItemsActivity(){
+    private void goToItemsActivity() {
         Intent intent = new Intent(WelcomeActivity.this, ItemsActivity.class);
         startActivity(intent);
     }

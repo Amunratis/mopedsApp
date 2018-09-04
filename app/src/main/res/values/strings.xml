@@ -7,4 +7,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="moped1">Moped1</string>
     <string name="moped2">Moped2</string>
+    <string name="facebook_app_id">675323336165349</string>
+    <string name="fb_login_protocol_scheme">fb675323336165349</string>
+
 </resources>
